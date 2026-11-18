@@ -2,6 +2,7 @@ package com.excelr.taskmanager.controller;
 
 import com.excelr.taskmanager.model.Project;
 import com.excelr.taskmanager.model.Task;
+import com.excelr.taskmanager.model.User;
 import com.excelr.taskmanager.repository.ProjectRepository;
 import com.excelr.taskmanager.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,22 +14,27 @@ import java.util.List;
 @RequestMapping("/api/projects")
 @CrossOrigin(origins = "*") // Allows your React app to talk to this backend
 public class ProjectController {
-
+	@Autowired
+	private com.excelr.taskmanager.repository.UserRepository userRepository;
+	
     @Autowired
     private ProjectRepository projectRepository;
 
     @Autowired
     private TaskRepository taskRepository;
 
-    // Fetch all projects with their tasks
-    @GetMapping
-    public List<Project> getAllProjects() {
-        return projectRepository.findAll();
+ // Fetch ONLY the logged-in user's projects
+    @GetMapping("/user/{userId}")
+    public List<Project> getUserProjects(@PathVariable Long userId) {
+        return projectRepository.findByUserId(userId);
     }
 
-    // Create a new project
-    @PostMapping
-    public Project createProject(@RequestBody Project project) {
+    // Create a project linked to the logged-in user
+    @PostMapping("/user/{userId}")
+    public Project createProject(@PathVariable Long userId, @RequestBody Project project) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        project.setUser(user);
         return projectRepository.save(project);
     }
 
