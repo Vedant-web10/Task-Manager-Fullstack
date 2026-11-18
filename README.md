@@ -1,40 +1,49 @@
-# Full-Stack Task Manager
+# Full-Stack Task Management Dashboard
 
-A Kanban-style task management dashboard built to manage projects and tasks efficiently. This is a full-stack capstone project featuring a decoupled architecture with a React frontend and a Spring Boot REST API backend.
+A secure, multi-tenant, production-ready Kanban task management platform built as a capstone project. This application features a decoupled client-server architecture with strict user data isolation, relational database cascading, and persistent session management.
 
-## 🛠️ Tech Stack
-**Frontend:**
-* React.js (Vite)
-* Bootstrap 5
-* Axios
+## 🚀 Key Features
 
-**Backend:**
-* Java 17
-* Spring Boot 3 (Spring Web, Spring Data JPA)
-* Hibernate
+* **Secure User Authentication:** Custom-implemented login and signup workflow verifying credentials against a relational PostgreSQL database.
+* **Multi-Tenant Data Isolation:** `@ManyToOne` database relationships and customized repository queries (`findByUserId`) ensure that users securely fetch, view, and modify only their own private projects and tasks.
+* **Persistent Sessions:** React `localStorage` integration maintains user sessions across page refreshes, seamlessly restoring dashboard state.
+* **Dynamic Kanban Board:** Reactive UI utilizing Axios for real-time asynchronous CRUD operations without full-page reloads.
+* **Relational Data Integrity:** Hibernate `CascadeType.ALL` automatically cascades deletions from parent projects to child tasks, preventing orphaned rows in the database.
+* **Bidirectional JSON Handling:** Utilizes `@JsonManagedReference` and `@JsonBackReference` to cleanly serialize relational entities while eliminating recursive `StackOverflowError` exceptions in the REST API.
 
-**Database:**
-* PostgreSQL
+---
 
-## ✨ Features
-* **Project Management:** Create, view, and delete projects.
-* **Task Tracking:** Add tasks to specific projects with Low, Medium, or High priority levels.
-* **Kanban Workflow:** Move tasks dynamically across "To Do", "In Progress", and "Done" statuses.
-* **Relational Data Mapping:** Utilizes Hibernate `@OneToMany` relationships with `CascadeType.ALL` to automatically wipe associated tasks when a parent project is deleted.
+## 🛠️ Technology Stack
 
-## 🚀 How to Run the Project
+### **Frontend**
+* **React.js** (Vite build tool for high-performance bundling)
+* **Bootstrap 5** for responsive styling and UI components
+* **Axios** for HTTP network requests and REST API communication
 
-### 1. Database Setup
-* Open pgAdmin and create a new PostgreSQL database named `task_manager_db`.
-* Update the `src/main/resources/application.properties` file in the backend folder with your local PostgreSQL username and password.
+### **Backend**
+* **Java 17** & **Spring Boot 3**
+* **Spring Web** (RESTful API architecture)
+* **Spring Data JPA** & **Hibernate ORM** for database abstraction
 
-### 2. Start the Backend (Spring Boot)
-* Import the `taskmanager` folder into Eclipse or IntelliJ.
-* Run `TaskmanagerApplication.java` as a Java Application.
-* The REST API will start on `http://localhost:8080`. Hibernate will automatically generate the required database tables.
+### **Database & Tools**
+* **PostgreSQL** relational database
+* **Eclipse IDE** & **IntelliJ IDEA** (Backend development)
+* **VS Code** (Frontend development & version control)
+* **Git & GitHub** for source code management
 
-### 3. Start the Frontend (React)
-* Open a terminal and navigate to the `taskmanager-frontend` directory.
-* Run `npm install` to install dependencies.
-* Run `npm run dev` to start the Vite development server.
-* Open `http://localhost:5173` in your browser to view the dashboard.
+---
+
+## 📂 Architecture & Project Structure
+
+```text
+Task-Manager-Fullstack/
+│
+├── taskmanager/                  # Spring Boot Backend API
+│   └── src/main/java/com/excelr/taskmanager/
+│       ├── controller/           # REST Controllers (ProjectController, UserController)
+│       ├── model/                # JPA Entities (User, Project, Task)
+│       └── repository/           # Spring Data JPA Interfaces
+│
+└── taskmanager-frontend/         # React Client Application
+    └── src/
+        └── App.jsx               # Main component handling auth, routing, and Kanban UI
